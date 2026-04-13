@@ -1,0 +1,99 @@
+{
+  "name": "hassweather",
+  "author": "vincentezw",
+  "version": "1.0.0",
+  "keywords": [
+    "watchface",
+    "weather",
+    "pebble",
+    "moddable",
+    "homeassistant"
+  ],
+  "private": true,
+  "dependencies": {
+    "@rebble/clay": "^1.0.8"
+  },
+  "pebble": {
+    "displayName": "hassweather",
+    "capabilities": [
+      "configurable",
+      "network"
+    ],
+    "uuid": "8f99cb83-8b0f-4982-bb0b-aa2ed7fb2233",
+    "projectType": "moddable",
+    "sdkVersion": "3",
+    "enableMultiJS": true,
+    "targetPlatforms": [
+      "emery",
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": true
+    },
+    "messageKeys": [
+      "COMMAND",
+      "DATA",
+      "HOUR12",
+      "OFFSET"
+    ],
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "name": "ICON_SUNRISE",
+          "file": "img/sunrise.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_SUNSET",
+          "file": "img/sunset.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_CLEAR_NIGHT",
+          "file": "img/clear-night.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_CLOUDY",
+          "file": "img/cloudy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_FOG",
+          "file": "img/fog.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_PARTLY_CLOUDY",
+          "file": "img/partly-cloudy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_RAINY",
+          "file": "img/rainy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_SNOWY",
+          "file": "img/snowy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_SNOWY_RAINY",
+          "file": "img/snowy-rainy.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_SUNNY",
+          "file": "img/sunny.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ICON_UNKNOWN",
+          "file": "img/unknown.png"
+        }
+      ]
+    }
+  }
+}

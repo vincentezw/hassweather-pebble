@@ -68,7 +68,11 @@ let appMessage = new Message({
     if (command === 1 && data) {
       try {
         sunData = JSON.parse(data);
-        localStorage.setItem("sunData", data);
+        try {
+          localStorage.setItem("sunData", data);
+        } catch (e) {
+          console.log("Error saving sun data to localStorage:", e);
+        }
         application.distribute("onSunDataChanged");
       } catch (e) {
         console.log("JSON Error (Sun):", e);
@@ -77,7 +81,11 @@ let appMessage = new Message({
     else if (command === 2 && data) {
       try {
         forecastData = JSON.parse(data);
-        localStorage.setItem("forecastData", data);
+        try {
+          localStorage.setItem("forecastData", data);
+        } catch (e) {
+          console.log("Error saving forecast data to localStorage:", e);
+        }
         application.distribute("onForecastChanged");
       } catch (e) {
         console.log("JSON Error (Forecast):", e);
@@ -186,34 +194,34 @@ class ForecastRowBehavior extends Behavior {
 }
 
 function getInitialForecastColumns() {
-  const data = forecastData ?? [
-    null,
-    "", "", "unknown",
-    "", "", "unknown",
-    "", "", "unknown",
-    "", "", "unknown",
-  ];
-  const timestamp = data[0];
-  let startIndex = 1;
-
-  if (timestamp) {
-    const currentHour = new Date().getHours();
-    const serverHour = new Date(timestamp).getHours();
-    const hourDiff = (currentHour - serverHour + 24) % 24;
-    
-    const calculatedIndex = 1 + (hourDiff * 12);
-    if (calculatedIndex + 11 < data.length) {
-      startIndex = calculatedIndex;
+  const current = new Date();
+  
+  if (!forecastData || !forecastData[0] || (current - forecastData[0]) > 7200000) {
+    const empty = [];
+    for (let i = 0; i < 4; i++) {
+      empty.push(new ForecastColumn("", "", "unknown"));
     }
+    return empty;
+  }
+
+  const lastSync = new Date(forecastData[0]);
+  let hourDiff = current.getHours() - lastSync.getHours();
+  if (hourDiff < 0) hourDiff += 24;
+  let startIndex = 1 + (hourDiff * 12);
+
+  if (startIndex + 11 >= forecastData.length) {
+    const empty = [];
+    for (let i = 0; i < 4; i++) empty.push(new ForecastColumn("", "", "unknown"));
+    return empty;
   }
 
   const columns = [];
   for (let i = 0; i < 4; i++) {
     const base = startIndex + (i * 3);
     columns.push(new ForecastColumn(
-      data[base],
-      data[base + 1],
-      data[base + 2]
+      forecastData[base],     
+      forecastData[base + 1], 
+      forecastData[base + 2]  
     ));
   }
   return columns;

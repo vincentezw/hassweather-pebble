@@ -8,8 +8,11 @@
 	],
 	"modules": {
 		"*": [
+      "./batteryRow.js",
       "./forecastRowBehavior.js",
       "./main.js",
+      "./pebble.js",
+      "./sunRow.js",
       "./theme.js"
     ]
 	}

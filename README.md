@@ -14,6 +14,10 @@ This project endorses the [Boycott, Divestment, Sanctions](https://bdsmovement.n
 
 Support requests originating from Israel will not be addressed. Issues and pull requests from anyone, anywhere, that improve the software for everyone else, remain welcome.
 
+## Screenshots
+
+![Watchface](screenshots/emery_1.png)
+
 ## TODO
 - add "invert" color setting and pass it on in appMessage.
 - optimise layout on gabbro

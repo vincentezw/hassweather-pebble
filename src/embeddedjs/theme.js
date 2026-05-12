@@ -5,14 +5,6 @@ const colours = Object.freeze({ // TODO: check "invert" from config and swap the
   red: "#ba0000",
 });
 
-const weatherSkin = new Skin({
-  texture: new Texture(2),
-  width: 25,
-  height: 25,
-  fill: colours.white,
-  variants: 25,
-});
-
 const iconSkin = new Skin({
   texture: new Texture(1),
   width: 20,
@@ -40,4 +32,4 @@ const styles = Object.freeze({
   }),
 });
 
-export {colours, weatherSkin, iconSkin, styles};
+export {colours, iconSkin, styles};

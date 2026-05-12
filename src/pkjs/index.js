@@ -79,8 +79,8 @@ function getWeather(url, token, entity) {
         var now = Date.now();
         var forecast = [now];
         for (let i = 0; i < RETURN_SIZE; i++) {
-          console.log(JSON.stringify(raw[i]));
           const item = raw[i];
+          if (!item) break;
           forecast.push(normalizeCondition(item.condition));
           forecast.push(Math.round(item.temperature));
         }
@@ -93,6 +93,10 @@ function getWeather(url, token, entity) {
         console.log("Weather Error: " + e);
       }
     }
+  };
+
+  xhr.onerror = function() {
+    console.error("Weather XHR Network Error occurred");
   };
 
   xhr.send(JSON.stringify({ entity_id: entity, type: "hourly" }));
@@ -117,7 +121,6 @@ function getSunData(url, token, callback) {
         var data = JSON.parse(xhr.responseText);
         var nextRise = new Date(data.attributes.next_rising);
         var nextSet = new Date(data.attributes.next_setting);
-        console.log("ashi", nextSet);
 
         Pebble.sendAppMessage({
           'COMMAND': 1,
@@ -139,6 +142,7 @@ function getSunData(url, token, callback) {
 
   xhr.onerror = function() {
     console.error("XHR Network Error occurred");
+    done();
   };
 
   xhr.open("GET", requestUrl, true);

@@ -1,4 +1,15 @@
-import {styles, weatherSkin} from "./theme";
+import {colours, styles} from "./theme";
+
+// forecastData layout: [timestamp, c0, t0, c1, t1, ..., c10, t10]
+// timestamp = ms when fetched; ci = condition variant index; ti = rounded temperature.
+
+const weatherSkin = new Skin({
+  texture: new Texture(2),
+  width: 25,
+  height: 25,
+  fill: colours.white,
+  variants: 25,
+});
 
 class ForecastColumn extends Column {
   constructor(hour, temp, condition) {

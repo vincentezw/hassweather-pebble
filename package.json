@@ -32,9 +32,7 @@
     },
     "messageKeys": [
       "COMMAND",
-      "DATA",
-      "HOUR12",
-      "OFFSET"
+      "DATA"
     ],
     "resources": {
       "media": [

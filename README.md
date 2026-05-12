@@ -6,6 +6,12 @@ The watchface also displays an indicator of your "progress" from the last sunris
 ## Attribution
 * Icons from: https://github.com/D0-0K/Pebble-Icons/tree/main (I converted to PNG with reduced colours)
 
+## BDS
+
+This project endorses the [Boycott, Divestment, Sanctions](https://bdsmovement.net/) movement against the apartheid state of Israel, in support of Palestinian human rights.
+
+Support requests originating from Israel will not be addressed. Issues and pull requests from anyone, anywhere, that improve the software for everyone else, remain welcome.
+
 ## TODO
 - add "invert" color setting and pass it on in appMessage.
 - optimise layout on gabbro

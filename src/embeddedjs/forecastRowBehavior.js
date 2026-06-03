@@ -5,10 +5,10 @@ import {colours, styles} from "./theme";
 
 const weatherSkin = new Skin({
   texture: new Texture(2),
-  width: 25,
-  height: 25,
+  width: 30,
+  height: 30,
   fill: colours.white,
-  variants: 25,
+  variants: 30,
 });
 
 class ForecastColumn extends Column {
@@ -22,7 +22,7 @@ class ForecastColumn extends Column {
           style: styles.boldSmall,
         }),
         new Content(null, {
-          left: 12,
+          left: 8,
           top: 8,
           skin: weatherSkin,
           variant: condition,

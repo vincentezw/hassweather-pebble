@@ -3,11 +3,14 @@ var clayConfig = require('./config');
 var clay = new Clay(clayConfig, null, {autoHandleEvents: false});
 
 var haUrl, haToken, haEntity;
+var WEATHER_RETRY_COUNT = 2;
+var WEATHER_RETRY_DELAY_MS = 30000;
 
 function loadSettings() {
   haUrl = localStorage.getItem("HA_URL") || "";
   haToken = localStorage.getItem("HA_TOKEN") || "";
   haEntity = localStorage.getItem("HA_ENTITY") || "";
+  haEntity = 'weather.home';
 }
 
 Pebble.addEventListener('showConfiguration', function(e) {
@@ -61,7 +64,19 @@ function normalizeCondition(c) {
   return map[c];
 }
 
-function getWeather(url, token, entity) {
+function retryWeather(url, token, entity, retriesRemaining) {
+  if (retriesRemaining <= 0) return;
+
+  setTimeout(function() {
+    getWeather(url, token, entity, retriesRemaining - 1);
+  }, WEATHER_RETRY_DELAY_MS);
+}
+
+function getWeather(url, token, entity, retriesRemaining) {
+  if (retriesRemaining === undefined) {
+    retriesRemaining = WEATHER_RETRY_COUNT;
+  }
+
   var RETURN_SIZE = 11;
   var baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
   var fullUrl = baseUrl + "/api/services/weather/get_forecasts?return_response=true";
@@ -72,31 +87,43 @@ function getWeather(url, token, entity) {
   xhr.setRequestHeader("Content-Type", "application/json");
 
   xhr.onload = function() {
-    if (xhr.status === 200) {
-      try {
-        var data = JSON.parse(xhr.responseText);
-        var raw = data.service_response[entity] ? data.service_response[entity].forecast : [];
-        var now = Date.now();
-        var forecast = [now];
-        for (let i = 0; i < RETURN_SIZE; i++) {
-          const item = raw[i];
-          if (!item) break;
-          forecast.push(normalizeCondition(item.condition));
-          forecast.push(Math.round(item.temperature));
-        }
+    if (xhr.status !== 200) {
+      retryWeather(url, token, entity, retriesRemaining);
+      return;
+    }
 
-        Pebble.sendAppMessage({
-          'COMMAND': 2,
-          'DATA': JSON.stringify(forecast)
-        });
-      } catch (e) {
-        console.log("Weather Error: " + e);
+    try {
+      var data = JSON.parse(xhr.responseText);
+      var raw = data.service_response[entity] ? data.service_response[entity].forecast : [];
+      if (!raw.length) {
+        retryWeather(url, token, entity, retriesRemaining);
+        return;
       }
+
+      var now = Date.now();
+      var forecast = [now];
+      for (let i = 0; i < RETURN_SIZE; i++) {
+        const item = raw[i];
+        if (!item) break;
+        forecast.push(normalizeCondition(item.condition));
+        forecast.push(Math.round(item.temperature));
+      }
+
+      Pebble.sendAppMessage({
+        'COMMAND': 2,
+        'DATA': JSON.stringify(forecast)
+      }, function() {}, function() {
+        retryWeather(url, token, entity, retriesRemaining);
+      });
+    } catch (e) {
+      console.log("Weather Error: " + e);
+      retryWeather(url, token, entity, retriesRemaining);
     }
   };
 
   xhr.onerror = function() {
     console.error("Weather XHR Network Error occurred");
+    retryWeather(url, token, entity, retriesRemaining);
   };
 
   xhr.send(JSON.stringify({ entity_id: entity, type: "hourly" }));
@@ -128,8 +155,7 @@ function getSunData(url, token, callback) {
             r: nextRise.getTime(),
             s: nextSet.getTime(),
           })
-        });
-        done();
+        }, done, done);
       } catch (e) {
         console.error("JSON Parse error: " + e);
         done();
@@ -162,19 +188,15 @@ Pebble.addEventListener('appmessage', function (e) {
 
   switch (command) {
     case 1:
-      console.log("sunrise command received");
       getSunData(haUrl, haToken, null);
       break;
     case 2:
-      console.log("weather command received");
       getWeather(haUrl, haToken, haEntity);
       break;
     case 3:
-      console.log("double sync started");
       // 1. Fetch Sun Data first
       getSunData(haUrl, haToken, function() {
         // 2. This callback runs ONLY after Sun Data is sent to the watch
-        console.log("Sun data sent, now fetching weather...");
         getWeather(haUrl, haToken, haEntity);
       });
       break;

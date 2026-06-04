@@ -33,7 +33,7 @@ const application = new Application(null, {
       }
 
       watch.addEventListener("connected", () => {
-        batteryRow.content(2).visible = watch.connected.pebblekit;
+        batteryRow.content(2).visible = !watch.connected.pebblekit;
       });
 
       watch.addEventListener("minutechange", (e) => {

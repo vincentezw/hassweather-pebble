@@ -77,7 +77,7 @@ function getWeather(url, token, entity, retriesRemaining) {
     retriesRemaining = WEATHER_RETRY_COUNT;
   }
 
-  var RETURN_SIZE = 11;
+  var RETURN_SIZE = 8;
   var baseUrl = url.endsWith("/") ? url.slice(0, -1) : url;
   var fullUrl = baseUrl + "/api/services/weather/get_forecasts?return_response=true";
 

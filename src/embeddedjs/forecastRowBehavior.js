@@ -57,7 +57,7 @@ export class ForecastRowBehavior extends Behavior {
     const serverHour = new Date(application.forecastData[0]).getHours();
     const hoursElapsed = (currentHour - serverHour + 24) % 24;
     const startIndex = (hoursElapsed * 2) + 1;
-    const hourOffsets = [0, 3, 6, 9];
+    const hourOffsets = [0, 1, 3, 5];
 
     for (let i = 0; i < 4; i++) {
       const column = row.content(i);

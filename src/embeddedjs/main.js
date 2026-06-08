@@ -259,7 +259,7 @@ const batteryRow = new Row(null, {
       skin: iconSkin,
       variant: 6,
       top: 1,
-      visible: watch.connected.pebblekit,
+      visible: !watch.connected.pebblekit,
     }),
   ]
 });

@@ -42,16 +42,19 @@ const application = new Application(null, {
           sunTargetTime = null;
           app.distribute("onSunDataChanged");
         }
+
+        const currentMinute = e.date.getMinutes();
+        if (currentMinute % 5 === 0) {
+          const c = getDataCommand(e.date);
+          if (c !== 0) {
+            trySend(c);
+          }
+        }
       });
 
       watch.addEventListener("hourchange", (e) => {
         dateLabel.string = getDateString(e.date);
         app.distribute("onForecastChanged");
-
-        const c = getDataCommand(e.date);
-        if (c !== 0) {
-          trySend(c);
-        }
       });
     }
   }
@@ -70,11 +73,7 @@ const appMessage = new Message({
     if (command === 1 && data) {
       try {
         application.sunData = JSON.parse(data);
-        try {
-          localStorage.setItem("sunData", data);
-        } catch (e) {
-          console.log("Error saving sun data:", e);
-        }
+        localStorage.setItem("sunData", data);
         application.distribute("onSunDataChanged");
       } catch (e) {
         console.log("JSON Error (Sun):", e);
@@ -83,11 +82,7 @@ const appMessage = new Message({
     else if (command === 2 && data) {
       try {
         application.forecastData = JSON.parse(data);
-        try {
-          localStorage.setItem("forecastData", data);
-        } catch (e) {
-          console.log("Error saving forecast data:", e);
-        }
+        localStorage.setItem("forecastData", data);
         application.distribute("onForecastChanged");
       } catch (e) {
         console.log("JSON Error (Forecast):", e);
@@ -176,9 +171,7 @@ function formatSunTime(timestamp) {
   return h + ":" + minStr;
 }
 
-function getDataCommand(dateNow = new Date()) {
-  const now = Date.now();
-
+function getDataCommand(now = new Date()) {
   const sd = application.sunData;
   const sunStale = !sd || !sd.ts || (now > sd.ts);
 
@@ -188,14 +181,14 @@ function getDataCommand(dateNow = new Date()) {
     const lastSync = new Date(application.forecastData[0]);
     const minsOld = (now - application.forecastData[0]) / 60000;
 
-    if (minsOld >= 60 || dateNow.getHours() !== lastSync.getHours()) {
+    if (minsOld >= 60 || now.getHours() !== lastSync.getHours()) {
       weatherStale = true;
     }
   }
 
-  if (sunStale && weatherStale) return 3; // get both
-  if (weatherStale) return 2;
-  if (sunStale) return 1;
+  if (sunStale && weatherStale) { return 3; }// get both
+  if (weatherStale) { return 2; }
+  if (sunStale) { return 1; }
   return 0;
 }
 

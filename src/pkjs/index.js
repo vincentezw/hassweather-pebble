@@ -10,7 +10,6 @@ function loadSettings() {
   haUrl = localStorage.getItem("HA_URL") || "";
   haToken = localStorage.getItem("HA_TOKEN") || "";
   haEntity = localStorage.getItem("HA_ENTITY") || "";
-  haEntity = 'weather.home';
 }
 
 Pebble.addEventListener('showConfiguration', function(e) {

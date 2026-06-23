@@ -7,7 +7,6 @@ const weatherSkin = new Skin({
   texture: new Texture(2),
   width: 30,
   height: 30,
-  fill: colours.white,
   variants: 30,
 });
 

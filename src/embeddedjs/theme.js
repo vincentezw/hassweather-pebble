@@ -1,15 +1,19 @@
 const colours = Object.freeze({ // TODO: check "invert" from config and swap these if needed
   black: "#000000",
-  white: "#FFFFFF",
   grey: "#888888",
   red: "#ba0000",
+  bg: [
+    "#e88b00",
+    "#96fa8e",
+    "#00d9e8",
+    "#eea0fa",
+  ]
 });
 
 const iconSkin = new Skin({
   texture: new Texture(1),
   width: 20,
   height: 20,
-  fill: colours.white,
   variants: 20,
 });
 
@@ -32,4 +36,8 @@ const styles = Object.freeze({
   }),
 });
 
-export {colours, iconSkin, styles};
+export {
+  colours,
+  iconSkin,
+  styles
+};

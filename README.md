@@ -16,7 +16,8 @@ Support requests originating from Israel will not be addressed. Issues and pull 
 
 ## Screenshots
 
-![Watchface](screenshots/emery_1.png)
+![Watchface 1](screenshots/emery_1.png)
+![Watchface 2](screenshots/emery_2.png)
 
 ## TODO
 - add "invert" color setting and pass it on in appMessage.

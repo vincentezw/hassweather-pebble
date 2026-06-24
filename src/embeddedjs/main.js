@@ -87,10 +87,7 @@ const appMessage = new Message({
         localStorage.setItem("forecastData", data);
         application.distribute("onForecastChanged");
 
-        backgroundColourIndex++;
-        if (backgroundColourIndex > colours.bg.length) {
-          backgroundColourIndex = 0;
-        }
+        backgroundColourIndex = (backgroundColourIndex + 1) % colours.bg.length;
         appSkin.fill = colours.bg[backgroundColourIndex];
       } catch (e) {
         console.log("JSON Error (Forecast):", e);

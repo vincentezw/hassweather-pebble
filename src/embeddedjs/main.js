@@ -6,14 +6,17 @@ import {ForecastRowBehavior} from "./forecastRowBehavior";
 import {colours, iconSkin, styles} from "./theme";
 
 const DAY_MS = 86400000;
-const DAYS = Object.freeze(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
-const MONTHS = Object.freeze(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]);
 const BATTERY_THRESHOLDS = Object.freeze([20, 50, 80]);
 
 let sunTargetTime = null;
+let backgroundColourIndex = 0;
+
+const appSkin = new Skin({
+  fill: colours.bg[backgroundColourIndex],
+});
 
 const application = new Application(null, {
-  skin: new Skin({fill: colours.white}),
+  skin: appSkin,
   Behavior: class extends Behavior {
     onCreate(app, _data) {
       const sRaw = localStorage.getItem("sunData");
@@ -78,12 +81,17 @@ const appMessage = new Message({
       } catch (e) {
         console.log("JSON Error (Sun):", e);
       }
-    }
-    else if (command === 2 && data) {
+    } else if (command === 2 && data) {
       try {
         application.forecastData = JSON.parse(data);
         localStorage.setItem("forecastData", data);
         application.distribute("onForecastChanged");
+
+        backgroundColourIndex++;
+        if (backgroundColourIndex > colours.bg.length) {
+          backgroundColourIndex = 0;
+        }
+        appSkin.fill = colours.bg[backgroundColourIndex];
       } catch (e) {
         console.log("JSON Error (Forecast):", e);
       }
@@ -224,10 +232,6 @@ function formatClockTime(date, hour12) {
   return h12 + ":" + minStr + (h >= 12 ? "pm" : "am");
 }
 
-function getDateString(date) {
-  return DAYS[date.getDay()] + ", " + MONTHS[date.getMonth()] + " " + date.getDate();
-}
-
 const dateLabel = new Label(null, {
   left: 0, right: 0, top: 100,
   string: getDateString(new Date()),
@@ -317,6 +321,16 @@ const sunRow = new Row(null, {
     })
   ],
 });
+
+function getDateString(date) {
+  const days = "SunMonTueWedThuFriSat";
+  const months = "JanFebMarAprMayJunJulAugSepOctNovDec";
+  
+  const dStr = days.substr(date.getDay() * 3, 3);
+  const mStr = months.substr(date.getMonth() * 3, 3);
+  
+  return dStr + ", " + mStr + " " + date.getDate();
+}
 
 application.add(sunRow);
 application.add(timeLabel);

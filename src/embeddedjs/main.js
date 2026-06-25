@@ -11,12 +11,10 @@ const BATTERY_THRESHOLDS = Object.freeze([20, 50, 80]);
 let sunTargetTime = null;
 let backgroundColourIndex = 0;
 
-const appSkin = new Skin({
-  fill: colours.bg[backgroundColourIndex],
-});
-
 const application = new Application(null, {
-  skin: appSkin,
+  skin: new Skin({
+    fill: colours.bg[backgroundColourIndex],
+  }),
   Behavior: class extends Behavior {
     onCreate(app, _data) {
       const sRaw = localStorage.getItem("sunData");
@@ -88,7 +86,7 @@ const appMessage = new Message({
         application.distribute("onForecastChanged");
 
         backgroundColourIndex = (backgroundColourIndex + 1) % colours.bg.length;
-        appSkin.fill = colours.bg[backgroundColourIndex];
+        application.skin = new Skin({fill: colours.bg[backgroundColourIndex]});
       } catch (e) {
         console.log("JSON Error (Forecast):", e);
       }

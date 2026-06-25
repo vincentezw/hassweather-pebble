@@ -4,8 +4,8 @@ const colours = Object.freeze({ // TODO: check "invert" from config and swap the
   red: "#ba0000",
   bg: [
     "#e88b00",
-    "#96fa8e",
-    "#00d9e8",
+    "#59f790",
+    "#5996f7",
     "#eea0fa",
   ]
 });

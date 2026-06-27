@@ -176,7 +176,11 @@ function formatSunTime(timestamp) {
 
 function getDataCommand(nowMs = new Date().getTime()) {
   const sd = application.sunData;
-  const sunStale = !sd || !sd.r || !sd.s || (nowMs > Math.max(sd.r, sd.s));
+  const sunStale =
+    !sd ||
+    !sd.r ||
+    !sd.s ||
+    nowMs > Math.min(sd.r, sd.s);
 
   let weatherStale = !application.forecastData || !application.forecastData[0];
 

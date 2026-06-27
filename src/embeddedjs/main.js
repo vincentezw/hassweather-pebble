@@ -9,7 +9,7 @@ const DAY_MS = 86400000;
 const BATTERY_THRESHOLDS = Object.freeze([20, 50, 80]);
 
 let sunTargetTime = null;
-let backgroundColourIndex = 0;
+let backgroundColourIndex = (Math.random() * colours.bg.length) | 0;
 
 const application = new Application(null, {
   skin: new Skin({
@@ -46,7 +46,7 @@ const application = new Application(null, {
 
         const currentMinute = e.date.getMinutes();
         if (currentMinute % 5 === 0) {
-          const c = getDataCommand(e.date);
+          const c = getDataCommand(e.date.getTime());
           if (c !== 0) {
             trySend(c);
           }
@@ -174,22 +174,21 @@ function formatSunTime(timestamp) {
   return h + ":" + minStr;
 }
 
-function getDataCommand(now = new Date()) {
+function getDataCommand(nowMs = new Date().getTime()) {
   const sd = application.sunData;
-  const sunStale = !sd || !sd.ts || (now > sd.ts);
+  const sunStale = !sd || !sd.r || !sd.s || (nowMs > Math.max(sd.r, sd.s));
 
   let weatherStale = !application.forecastData || !application.forecastData[0];
 
   if (!weatherStale) {
-    const lastSync = new Date(application.forecastData[0]);
-    const minsOld = (now - application.forecastData[0]) / 60000;
+    const minsOld = (nowMs - application.forecastData[0]) / 60000;
 
-    if (minsOld >= 60 || now.getHours() !== lastSync.getHours()) {
+    if (minsOld >= 60) {
       weatherStale = true;
     }
   }
 
-  if (sunStale && weatherStale) { return 3; }// get both
+  if (sunStale && weatherStale) { return 3; }
   if (weatherStale) { return 2; }
   if (sunStale) { return 1; }
   return 0;

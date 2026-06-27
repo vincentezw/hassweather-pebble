@@ -6,7 +6,8 @@ const colours = Object.freeze({ // TODO: check "invert" from config and swap the
     "#e88b00",
     "#59f790",
     "#5996f7",
-    "#eea0fa",
+    "#bf2af5",
+    "#f5d02a",
   ]
 });
 

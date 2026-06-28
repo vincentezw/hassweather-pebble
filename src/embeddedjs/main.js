@@ -41,11 +41,11 @@ const application = new Application(null, {
         timeLabel.string = formatClockTime(e.date, watch.hour12);
         if (sunTargetTime && e.date.getTime() >= sunTargetTime) {
           sunTargetTime = null;
-          app.distribute("onSunDataChanged");
         }
 
         const currentMinute = e.date.getMinutes();
-        if (currentMinute % 5 === 0) {
+        if (currentMinute % 12 === 0 || !sunTargetTime) {
+          app.distribute("onSunDataChanged");
           const c = getDataCommand(e.date.getTime());
           if (c !== 0) {
             trySend(c);

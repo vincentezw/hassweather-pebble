@@ -120,7 +120,7 @@ function paintBattery(level) {
   batteryRow.content(0).variant = ((v === -1) ? 3 : v) + 2; // first two icons are sun
 }
 
-const battery = new Battery();
+const battery = new Battery({});
 
 function formatSundata() {
   const data = application.sunData;

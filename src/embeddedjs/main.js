@@ -39,12 +39,15 @@ const application = new Application(null, {
 
       watch.addEventListener("minutechange", (e) => {
         timeLabel.string = formatClockTime(e.date, watch.hour12);
+        paintBattery(battery.sample().percent);
+        let fetchSun = false;
         if (sunTargetTime && e.date.getTime() >= sunTargetTime) {
           sunTargetTime = null;
+          fetchSun = true;
         }
 
         const currentMinute = e.date.getMinutes();
-        if (currentMinute % 12 === 0 || !sunTargetTime) {
+        if (currentMinute % 12 === 0 || fetchSun) {
           app.distribute("onSunDataChanged");
           const c = getDataCommand(e.date.getTime());
           if (c !== 0) {
@@ -117,11 +120,7 @@ function paintBattery(level) {
   batteryRow.content(0).variant = ((v === -1) ? 3 : v) + 2; // first two icons are sun
 }
 
-const battery = new Battery({
-  onSample() {
-    paintBattery(this.sample().percent);
-  }
-});
+const battery = new Battery();
 
 function formatSundata() {
   const data = application.sunData;
